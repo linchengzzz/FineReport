@@ -10,7 +10,7 @@ const server = app.listen(3000, function() {
     console.log('------======服务开启======------');
     console.log('------    监听端口:3000   ------');
     console.log('------    请求:post      ------');
-    console.log('------------------------------');
+    console.log('------==================------');
 });
 
 /**
