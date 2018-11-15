@@ -22,15 +22,16 @@
             function ajax(url = '', user = {}) {
                 const xhr = new XMLHttpRequest();
 
-                xhr.open('post', `${url}/WebReport/ReportServer?op=fs_load&cmd=login`, true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.send(`fr_username=${user.username}&fr_password=${user.password}&fr_remember=false`);
-
-                xhr.onreadystatechange = () => {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        return JSON.parse(xhr.responseText);
-                    }
-                };
+                return new Promise((resolve) => {
+                    xhr.open('post', `${url}/WebReport/ReportServer?op=fs_load&cmd=login`, true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send(`fr_username=${user.username}&fr_password=${user.password}&fr_remember=false`);
+                    xhr.onreadystatechange = () => {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            resolve(JSON.parse(xhr.responseText));
+                        }
+                    };
+                });
             }
 
             // 截取URLSearch
@@ -52,9 +53,12 @@
                 const frame = document.querySelector('#find-bi');
                 const query = URLQuery();
                 const user = { username: query.username, password: query.password };
-                const result = ajax(url, user);
+                const result = ajax(url, user).then(data => {
+                    console.log(data);
+                });
 
                 if (result) {
+                    console.log(result);
                     frame.src = result.url;
                 }
             }
