@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>FindBI</title>
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <iframe id="find-bi" src="" width="100%" height="100%" frameborder="0"></iframe>
+        <script>
+            // 发送ajax请求
+            function ajax(url = '', user = {}) {
+                const xhr = new XMLHttpRequest();
+
+                xhr.open('post', `${url}/WebReport/ReportServer?op=fs_load&cmd=login`, true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.send(`fr_username=${user.username}&fr_password=${user.password}&fr_remember=false`);
+
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        return JSON.parse(xhr.responseText);
+                    }
+                };
+            }
+
+            // 截取URLSearch
+            function URLQuery() {
+                const query = {};
+                let searchURL = window.location.search;
+
+                searchURL = searchURL.substring(1, searchURL.length);
+                searchURL.split('&').map((item) => {
+                    const data = item.split('=');
+                    query[data[0]] = data[1];
+                });
+
+                return query;
+            }
+
+            function _main() {
+                const url = 'http://192.168.1.29:37799';
+                const frame = document.querySelector('#find-bi');
+                const query = URLQuery();
+                const user = { username: query.username, password: query.password };
+                const result = ajax(url, user);
+
+                if (result) {
+                    frame.src = result.url;
+                }
+            }
+
+            _main();
+        </script>
+    </body>
+</html>
