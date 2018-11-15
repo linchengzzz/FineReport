@@ -22,7 +22,7 @@
             function ajax(url = '', user = {}) {
                 const xhr = new XMLHttpRequest();
 
-                return new Promise((resolve) => {
+                return new Promise(resolve => {
                     xhr.open('post', `${url}/WebReport/ReportServer?op=fs_load&cmd=login`, true);
                     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                     xhr.send(`fr_username=${user.username}&fr_password=${user.password}&fr_remember=false`);
@@ -40,27 +40,25 @@
                 let searchURL = window.location.search;
 
                 searchURL = searchURL.substring(1, searchURL.length);
-                searchURL.split('&').map((item) => {
+                searchURL.split('&').map(item => {
                     const data = item.split('=');
                     query[data[0]] = data[1];
                 });
 
                 return query;
             }
-
+            // 主程序入口
             function _main() {
                 const url = 'http://192.168.1.29:37799';
                 const frame = document.querySelector('#find-bi');
                 const query = URLQuery();
                 const user = { username: query.username, password: query.password };
-                const result = ajax(url, user).then(data => {
-                    console.log(data);
+                
+                ajax(url, user).then(result => {
+                    if (result && result.url) {
+                        frame.src = result.url;
+                    }
                 });
-
-                if (result) {
-                    console.log(result);
-                    frame.src = result.url;
-                }
             }
 
             _main();
